@@ -42,12 +42,12 @@ namespace MovieStoreB.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
             if (string.IsNullOrEmpty(id)) return BadRequest();
 
             var result =
-                _movieService.GetMoviesById(id);
+                await _movieService.GetMoviesById(id);
 
             if (result == null) return NotFound();
 
@@ -55,19 +55,19 @@ namespace MovieStoreB.Controllers
         }
 
         [HttpPost("AddMovie")]
-        public void AddMovie([FromBody]AddMovieRequest movieRequest)
+        public async Task AddMovie([FromBody] AddMovieRequest movieRequest)
         {
             var movie = _mapper.Map<Movie>(movieRequest);
 
-            _movieService.AddMovie(movie);
+            await _movieService.AddMovie(movie);
         }
 
         [HttpDelete("Delete")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (!string.IsNullOrEmpty(id)) return BadRequest($"Wrong id:{id}");
 
-            _movieService.DeleteMovie(id);
+            await _movieService.DeleteMovie(id);
 
             return Ok();
         }

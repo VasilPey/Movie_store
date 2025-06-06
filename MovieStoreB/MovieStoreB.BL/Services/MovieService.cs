@@ -25,7 +25,7 @@ namespace MovieStoreB.BL.Services
             return await _movieRepository.GetMovies();
         }
 
-        public void AddMovie(Movie movie)
+        public async Task AddMovie(Movie movie)
         {
             if (movie == null || movie.ActorIds == null) return;
 
@@ -36,33 +36,33 @@ namespace MovieStoreB.BL.Services
                 if (!Guid.TryParse(actor, out _)) return;
             }
 
-            _movieRepository.AddMovie(movie);
+            await Task.Run(() => _movieRepository.AddMovie(movie));
         }
 
-        public void DeleteMovie(string id)
+        public async Task DeleteMovie(string id)
         {
             if (!string.IsNullOrEmpty(id)) return;
 
-            _movieRepository.DeleteMovie(id);
+            await Task.Run(() => _movieRepository.DeleteMovie(id));
         }
 
-        public Movie? GetMoviesById(string id)
+        public async Task<Movie?> GetMoviesById(string id)
         {
             if (string.IsNullOrEmpty(id) || !Guid.TryParse(id, out var movieId))
             {
                 return null;
             }
 
-            return _movieRepository.GetMoviesById(movieId.ToString()).GetAwaiter().GetResult();
+            return await Task.Run(() => _movieRepository.GetMoviesById(movieId.ToString()));
         }
 
-        public void AddActor(string movieId, Actor actor) 
+        public async Task AddActor(string movieId, Actor actor)
         {
             if (string.IsNullOrEmpty(movieId) || actor == null) return;
 
             if (!Guid.TryParse(movieId, out _)) return;
 
-            var movie = _movieRepository.GetMoviesById(movieId).GetAwaiter().GetResult();
+            var movie = await Task.Run(() => _movieRepository.GetMoviesById(movieId));
 
             if (movie == null) return;
 
@@ -73,7 +73,7 @@ namespace MovieStoreB.BL.Services
 
             if (actor.Id == null || string.IsNullOrEmpty(actor.Id) || Guid.TryParse(actor.Id, out _) == false) return;
 
-            var existingActor = _actorRepository.GetById(actor.Id);
+            var existingActor = await _actorRepository.GetById(actor.Id);
 
             if (existingActor != null) return;
 

@@ -59,7 +59,7 @@ namespace MovieStoreB.Tests
         }
 
         [Fact]
-        void GetMoviesById_ReturnsData()
+        async Task GetMoviesById_ReturnsData()
         {
             // Arrange
             var movieId = _movies[0].Id;
@@ -71,7 +71,7 @@ namespace MovieStoreB.Tests
             var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
 
             // Act
-            var result = movieService.GetMoviesById(movieId);
+            var result = await movieService.GetMoviesById(movieId);
 
             // Assert
             Assert.NotNull(result);
@@ -79,7 +79,7 @@ namespace MovieStoreB.Tests
         }
 
         [Fact]
-        void GetMoviesById_MovieNotExist()
+        async Task GetMoviesById_MovieNotExist()
         {
             // Arrange
             var movieId = "c3bd1985-792e-4208-af81-4d154bff15c9";
@@ -91,14 +91,14 @@ namespace MovieStoreB.Tests
             var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
 
             // Act
-            var result = movieService.GetMoviesById(movieId);
+            var result = await movieService.GetMoviesById(movieId);
 
             // Assert
             Assert.Null(result);
         }
 
         [Fact]
-        void GetMoviesById_MovieWithInvalidGuid()
+        async Task GetMoviesById_MovieWithInvalidGuid()
         {
             // Arrange
             var movieId = "c3bd1985-792e-4208-af81-4d154bff15c9-12";
@@ -110,7 +110,7 @@ namespace MovieStoreB.Tests
             var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
 
             // Act
-            var result = movieService.GetMoviesById(movieId);
+            var result = await movieService.GetMoviesById(movieId);
 
             // Assert
             Assert.Null(result);

@@ -69,7 +69,7 @@ namespace MovieStoreB.Tests
             _actorRepositoryMock
                 .Setup(repo =>
                     repo.GetById(It.IsAny<string>()))
-                    .Returns((string id) =>
+                    .ReturnsAsync((string id) =>
                         _actors.FirstOrDefault(x => x.Id == id));
 
             //inject
