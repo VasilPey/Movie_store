@@ -29,16 +29,16 @@ namespace MovieStoreB.DL.Repositories.MongoRepositories
             _moviesCollection = database.GetCollection<Movie>($"{nameof(Movie)}s");
         }
 
-        public void AddMovie(Movie movie)
+        public async Task AddMovie(Movie movie)
         {
             movie.Id = Guid.NewGuid().ToString();
 
-            _moviesCollection.InsertOne(movie);
+            await _moviesCollection.InsertOneAsync(movie);
         }
 
-        public void DeleteMovie(string id)
+        public async Task DeleteMovie(string id)
         {
-            _moviesCollection.DeleteOne(m => m.Id == id);
+            await _moviesCollection.DeleteOneAsync(m => m.Id == id);
         }
 
         public async Task<List<Movie>> GetMovies()
@@ -48,9 +48,11 @@ namespace MovieStoreB.DL.Repositories.MongoRepositories
             return await result.ToListAsync();  
         }
 
-        public Movie? GetMoviesById(string id)
+        public async Task<Movie?> GetMoviesById(string id)
         {
-            return _moviesCollection.Find(m => m.Id == id).FirstOrDefault();
+            var result = await _moviesCollection.FindAsync(m => m.Id == id);
+
+            return await result.FirstOrDefaultAsync();
         }
 
         protected async Task<IEnumerable<Movie?>> GetMoviesAfterDateTime(DateTime date)

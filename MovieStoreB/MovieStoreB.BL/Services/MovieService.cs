@@ -53,7 +53,7 @@ namespace MovieStoreB.BL.Services
                 return null;
             }
 
-            return _movieRepository.GetMoviesById(movieId.ToString());
+            return _movieRepository.GetMoviesById(movieId.ToString()).GetAwaiter().GetResult();
         }
 
         public void AddActor(string movieId, Actor actor) 
@@ -62,7 +62,7 @@ namespace MovieStoreB.BL.Services
 
             if (!Guid.TryParse(movieId, out _)) return;
 
-            var movie = _movieRepository.GetMoviesById(movieId);
+            var movie = _movieRepository.GetMoviesById(movieId).GetAwaiter().GetResult();
 
             if (movie == null) return;
 

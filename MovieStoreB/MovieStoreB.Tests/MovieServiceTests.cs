@@ -65,7 +65,7 @@ namespace MovieStoreB.Tests
             var movieId = _movies[0].Id;
 
             _movieRepositoryMock.Setup(x => x.GetMoviesById(It.IsAny<string>()))
-                    .Returns((string id) =>
+                    .ReturnsAsync((string id) =>
                         _movies.FirstOrDefault(x => x.Id == id));
 
             var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
@@ -85,7 +85,7 @@ namespace MovieStoreB.Tests
             var movieId = "c3bd1985-792e-4208-af81-4d154bff15c9";
 
             _movieRepositoryMock.Setup(x => x.GetMoviesById(It.IsAny<string>()))
-                    .Returns((string id) =>
+                    .ReturnsAsync((string id) =>
                         _movies.FirstOrDefault(x => x.Id == id));
 
             var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
@@ -104,7 +104,7 @@ namespace MovieStoreB.Tests
             var movieId = "c3bd1985-792e-4208-af81-4d154bff15c9-12";
 
             _movieRepositoryMock.Setup(x => x.GetMoviesById(It.IsAny<string>()))
-                    .Returns((string id) =>
+                    .ReturnsAsync((string id) =>
                         _movies.First(x => x.Id == id));
 
             var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
