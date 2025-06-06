@@ -21,21 +21,21 @@ namespace ActorBioAPI.Controllers
         }
 
         [HttpGet(Name = "GetBioByActorId")]
-        public ActorBioResponse GetBioByActorId(string actorId)
+        public async Task<ActorBioResponse> GetBioByActorId(string actorId)
         {
-            return new ActorBioResponse
+            return await Task.FromResult(new ActorBioResponse
             {
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            };
+            });
         }
 
         [HttpPost(Name = "GetBioByActor")]
-        public ActorBioResponse GetBioByActor([FromBody] Actor actor)
+        public async Task<ActorBioResponse> GetBioByActor([FromBody] Actor actor)
         {
-            return new ActorBioResponse
+            return await Task.FromResult(new ActorBioResponse
             {
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            };
+            });
         }
     }
 }

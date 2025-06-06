@@ -1,5 +1,6 @@
 ﻿using MovieStoreB.BL.Interfaces;
 using MovieStoreB.DL.Interfaces;
+using MovieStoreB.DL.Kafka.KafkaCache;
 using MovieStoreB.Models.DTO;
 
 namespace MovieStoreB.BL.Services
@@ -9,12 +10,14 @@ namespace MovieStoreB.BL.Services
         private readonly IMovieRepository _movieRepository;
         private readonly IActorRepository _actorRepository;
         private readonly IActorBioGateway _actorBioGateway;
+        private readonly IKafkaCache<string, Movie> _movieCache;
 
-        public MovieService(IMovieRepository movieRepository, IActorRepository actorRepository, IActorBioGateway actorBioGateway)
+        public MovieService(IMovieRepository movieRepository, IActorRepository actorRepository, IActorBioGateway actorBioGateway, IKafkaCache<string, Movie> movieCache)
         {
             _movieRepository = movieRepository;
             _actorRepository = actorRepository;
             _actorBioGateway = actorBioGateway;
+            _movieCache = movieCache;
         }
 
         public async Task<List<Movie>> GetMovies()
@@ -23,6 +26,13 @@ namespace MovieStoreB.BL.Services
 
             var test1 = await _actorBioGateway.GetBioByActor(new Actor());
             return await _movieRepository.GetMovies();
+
+            var cachedMovies = _movieCache.GetAll().ToList();
+            if (cachedMovies.Any())
+            {
+                return cachedMovies;
+            }
+
         }
 
         public async Task AddMovie(Movie movie)

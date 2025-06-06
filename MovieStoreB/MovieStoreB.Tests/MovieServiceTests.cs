@@ -2,6 +2,7 @@
 using MovieStoreB.BL.Interfaces;
 using MovieStoreB.BL.Services;
 using MovieStoreB.DL.Interfaces;
+using MovieStoreB.DL.Kafka.KafkaCache;
 using MovieStoreB.Models.DTO;
 
 namespace MovieStoreB.Tests
@@ -11,6 +12,7 @@ namespace MovieStoreB.Tests
         private readonly Mock<IMovieRepository> _movieRepositoryMock;
         private readonly Mock<IActorRepository> _actorRepositoryMock;
         private readonly Mock<IActorBioGateway> _actorBioGatewayMock;
+        private readonly Mock<IKafkaCache<string, Movie>> _movieCacheMock;
 
         private List<Movie> _movies = new List<Movie>()
         {
@@ -56,6 +58,7 @@ namespace MovieStoreB.Tests
             _actorRepositoryMock = new Mock<IActorRepository>();
             _movieRepositoryMock = new Mock<IMovieRepository>();
             _actorBioGatewayMock = new Mock<IActorBioGateway>();
+            _movieCacheMock = new Mock<IKafkaCache<string, Movie>>();
         }
 
         [Fact]
@@ -68,7 +71,7 @@ namespace MovieStoreB.Tests
                     .ReturnsAsync((string id) =>
                         _movies.FirstOrDefault(x => x.Id == id));
 
-            var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
+            var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object, _movieCacheMock.Object);
 
             // Act
             var result = await movieService.GetMoviesById(movieId);
@@ -88,7 +91,7 @@ namespace MovieStoreB.Tests
                     .ReturnsAsync((string id) =>
                         _movies.FirstOrDefault(x => x.Id == id));
 
-            var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
+            var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object, _movieCacheMock.Object);
 
             // Act
             var result = await movieService.GetMoviesById(movieId);
@@ -107,7 +110,7 @@ namespace MovieStoreB.Tests
                     .ReturnsAsync((string id) =>
                         _movies.First(x => x.Id == id));
 
-            var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object);
+            var movieService = new MovieService(_movieRepositoryMock.Object, _actorRepositoryMock.Object, _actorBioGatewayMock.Object, _movieCacheMock.Object);
 
             // Act
             var result = await movieService.GetMoviesById(movieId);

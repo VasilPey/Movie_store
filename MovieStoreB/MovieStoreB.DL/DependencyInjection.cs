@@ -9,6 +9,7 @@ using MovieStoreB.DL.Kafka.KafkaCache;
 using MovieStoreB.DL.Repositories.MongoRepositories;
 using MovieStoreB.Models.Configurations.CachePopulator;
 using MovieStoreB.Models.DTO;
+using Microsoft.Extensions.Hosting;
 
 namespace MovieStoreB.DL
 {
@@ -27,7 +28,7 @@ namespace MovieStoreB.DL
             services.AddCache<MoviesCacheConfiguration, MoviesRepository, Movie, string>(config);
             services.AddCache<ActorsCacheConfiguration, ActorMongoRepository, Actor, string>(config);
 
-            services.AddHostedService<KafkaCache<string, Movie>>();
+            services.AddKafkaConsumer<MoviesCacheConfiguration, string, Movie>();
 
             //services.AddCache<ComposerCacheConfiguration, ComposerRepository, Composer, int>(config);
 
@@ -66,7 +67,23 @@ namespace MovieStoreB.DL
 
             return services;
         }
+        public static IServiceCollection AddKafkaConsumer<TCacheConfiguration, TKey, TValue>(this IServiceCollection services)
+            where TCacheConfiguration : CacheConfiguration
+            where TKey : notnull
+            where TValue : class
+        {
+            services.AddSingleton<KafkaCache<TKey, TValue, TCacheConfiguration>>();
+            services.AddSingleton<IKafkaCache<TKey, TValue>>(sp => sp.GetRequiredService<KafkaCache<TKey, TValue, TCacheConfiguration>>());
+            services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<KafkaCache<TKey, TValue, TCacheConfiguration>>());
+
+            return services;
+        }
     }
+
+
+
+
+}
        
      
-}
+
